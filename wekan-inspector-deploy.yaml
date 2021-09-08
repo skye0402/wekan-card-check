@@ -53,8 +53,8 @@ metadata:
   name: wekan-inspector-secret
 type: kubernetes.io/basic-auth
 stringData:
-  username: Gunter
-  password: pdapda0402
+  username: yyyyyyyyyyyyy
+  password: xxxxxxxxxxxxx
 ---
 apiVersion: v1
 kind: Service

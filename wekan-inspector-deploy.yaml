@@ -1,0 +1,116 @@
+# This deploys the wekan inspector
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wekan-inspector
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wekan-inspector
+  template:
+    metadata:
+      labels:
+        app: wekan-inspector
+        version: v1
+    spec:
+      volumes:
+      - name: wekan-inspector-configmap
+        configMap: 
+          name: wekan-inspector-configfile
+      containers:
+      # WeKan inspector container
+      - name: wekan-inspector-container
+        image: gunter04/wekaninspector:latest
+        imagePullPolicy: Always
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: wekan-inspector-secret
+              key: username
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: wekan-inspector-secret
+              key: password
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+        volumeMounts:  
+        - mountPath: /code/config
+          name: wekan-inspector-configmap 
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: wekan-inspector-secret
+type: kubernetes.io/basic-auth
+stringData:
+  username: Gunter
+  password: pdapda0402
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wekan-inspector-service
+  labels:
+    app: wekan-inspector
+spec:
+  ports:
+  - port: 3002
+    name: http
+    targetPort: 3002
+  selector:
+    app: wekan-inspector
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wekan-inspector-configfile
+data:
+  settings.cfg: |
+    # Server related information
+    [server]
+    #wekanUrl = https://wekantest.c-290ae5b.kyma.shoot.live.k8s-hana.ondemand.com/
+    wekanUrl = https://wekanprod.c-88f9b3a.kyma.shoot.live.k8s-hana.ondemand.com/
+
+    # Any master data needed specific to a board
+    [masterdata]
+    newListId = TRT42fYNkkQFyJTYz #new arrivals
+    authorID = SXWZPPfxcNDgrsewe #Card Inspector
+
+    # Mandatory fields
+    [checkFieldlist]
+    title = textfield,title
+    description = textfield,description
+    assignees = array,assignees
+    category = customtext,Category
+    dueAt = date,dueAt
+    engagementsize = customtext,Engagement Size
+    engagementtype = customtext,Engagement Type
+    industry = customtext,Industry
+    focusarea = customtext,Focus Area
+    lace = customtext,LACE
+    lineofbusiness = customtext,Line of Business
+    marketunit = customtext,Market Unit
+
+    # Possible webhook actions
+    [actions]
+    moved = act-moveCard,X
+    commented = act-addComment
+    setcusfield = act-setCustomField
+    remcusfield = act-unsetCustomField
+    remAssign = act-unjoinAssignee
+    addAssign = act-joinAssignee
+    setduedate = act-a-dueAt
+    setstartdate = act-a-startAt
+    cardcreated = act-createCard,X
+    checkedlist = act-checkedItem
+    uncheckedlist = act-uncheckedItem

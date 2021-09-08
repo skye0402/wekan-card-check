@@ -1,0 +1,6 @@
+*.code-workspace
+.vscode
+Dockerfile
+README.md
+config
+*.yaml

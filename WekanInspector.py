@@ -119,7 +119,10 @@ def checkCardFields(wekanUrl, token, boardId, cardDetails):
                 foundField = False
                 for cusField in customFields:
                     if cusField["name"] == fieldName[1]:
-                        foundField = True
+                        for cusf in cardDetails["customFields"]:
+                            if cusf["_id"] == cusField["_id"]: # Check if field is in card
+                                 if not(cusf["value"] == None or cusf["value"] == ""): # We want something in it!
+                                     foundField = True
                 if not foundField:
                     message = message + fieldName[1] + ", "
                     missingData = True
@@ -167,7 +170,7 @@ def main():
     except Exception:
         endless_loop("Could not retrieve username and/or password.") # Stop here
     
-    api.run(host='0.0.0.0', port=4004, debug=False)
+    api.run(host='0.0.0.0', port=3002, debug=False)
 
     # Get token from WeKan
 

@@ -50,9 +50,9 @@ def endless_loop(msg):
 # Retrieve WeKan token for successive API calls
 def getToken(url, wUsername, wPassword):
     callUrl = url + "users/login"
-    headers = {"Content-Type": "application/x-www-form-urlencoded", "Accept": "*/*"}
-    body = { "username": wUsername, "password": wPassword}
-    response = requests.post(callUrl, headers = headers, data = body ) 
+    headers = {"Content-Type": "application/json"}
+    body = json.dumps({ "username": wUsername, "password": wPassword })
+    response = requests.post(callUrl, headers = headers, data = body ) #TODO
     data = json.loads(response.text)
     print("Login to WeKan with response status " + str(response.status_code) + ".")
     return data["token"]

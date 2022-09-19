@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: wekan-inspector
+  namespace: wekan-prod
 spec:
   replicas: 1
   selector:
@@ -83,7 +84,7 @@ data:
 
     # Any master data needed specific to a board
     [masterdata]
-    newListId = TRT42fYNkkQFyJTYz #new arrivals
+    newListId = RwxL2WsiHaNoAxPgK #new arrivals
     authorID = SXWZPPfxcNDgrsewe #Card Inspector
 
     # Mandatory fields
@@ -91,13 +92,9 @@ data:
     title = textfield,title
     description = textfield,description
     assignees = array,assignees
-    category = customtext,Category
     dueAt = date,dueAt
-    engagementsize = customtext,Engagement Size
-    engagementtype = customtext,Engagement Type
-    industry = customtext,Industry
-    focusarea = customtext,Focus Area
-    lace = customtext,LACE
+    activitytype = customtext,Activity Type
+    channel = customtext,Channel
     lineofbusiness = customtext,Line of Business
     marketunit = customtext,Market Unit
 
